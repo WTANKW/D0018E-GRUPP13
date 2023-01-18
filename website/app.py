@@ -4,7 +4,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.routee('/')
+@app.route('/')
 def index():
     annanFunktion()
     return "TEST TEXT"
