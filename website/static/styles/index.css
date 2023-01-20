@@ -1,0 +1,79 @@
+body {
+    background-color: rgb(122, 159, 168);
+  }
+  
+  h1 {
+    font-family: verdana;
+    color: rgb(168, 32, 32);
+    text-align: center;
+  }
+  
+  p {
+    font-family: verdana;
+    font-size: 20px;
+  }
+
+  .TopDiv{
+    display: flex;
+    align-items: baseline;
+  }
+
+  .MidDiv{
+    display: flex;
+    align-items: baseline;
+  }
+
+  #SiteName{
+    display: flex;
+    font-family: verdana;
+    color: rgb(155, 170, 19);
+    font-weight: bold;
+    font-size: 300%;
+    box-shadow: 10px 10px rgb(124, 123, 50);
+  }
+
+  .AllItems{
+    display: flex;
+    align-self: center;
+    padding-left: 10%;
+  }
+
+  .GPU{
+    display: flex;
+    align-self: center;
+    padding-left: 5%;
+  }
+
+  .CPU{
+    display: flex;
+    align-self: center;
+    padding-left: 5%;
+  }
+
+  .Chassi{
+    display: flex;
+    align-self: center;
+    padding-left: 5%;
+  }
+
+  .SignUp{
+    display: flex;
+    align-self: center;
+    padding-left: 65%;
+  }
+
+  .LogIn{
+    display: flex;
+    align-self: center;
+    padding-left: 1.5%;
+  }
+
+  #ShoppingCart {
+    display: flex;
+    align-self: center;
+    max-width: 40%;
+    height: auto;
+    padding-left: 30%;
+    padding-top: 10%;
+}
+

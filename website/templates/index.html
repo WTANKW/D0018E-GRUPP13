@@ -1,25 +1,56 @@
 <!DOCTYPE html>
 <html>
-<head>
 
-<script src="https://cdn.tailwindcss.com"></script>   <!--Tailwind css shoof -->
+    <head>
+        <link rel="stylesheet" href="{{
+            url_for('static',filename='styles/index.css') }}">
 
-<!--<link rel="stylesheet" href="index.css"> -->
+        <title>E-Commerce</title>
+    </head>
 
-<title >E-Commerce</title>
-</head>
+    <body>
+        <div class="TopDiv">
+            <div class="SiteName">
+                <p id="SiteName">PomKlett</p>
+            </div>
 
-<body>
+            <div class="SignUp">
+                <a id="SignUp" href=other_page><button>Sign Up</button></a>
+            </div>
 
-<div class="font-bold m-2 p-1 border-pink-800 border-4 border-x-0 bg-cyan-500 shadow-lg shadow-cyan-500/60 text-black text-lg">
-    <h1 align="center">E-commerce site</h1>
-</div>
+            <div class="LogIn">
+                <a id="LogIn" href=other_page><button>Log In</button></a>
+            </div>
 
-<h1>Welcome!</h1>
+            <div class="ShoppingCart">
+                <img id="ShoppingCart" src="https://media.istockphoto.com/id/1206806317/sv/vektor/kundvagnsikonen-isolerad-p%C3%A5-vit-bakgrund.jpg?s=612x612&w=0&k=20&c=MIwoJBKvLKPX4malYnK6CeUqipNV5lqq0MOB6VAQYAw=">
+            </div>
+        </div>
 
-<p align="center">
-    <a href=other_page ><button class=grey style="height: 0px;width:150px">Press here to go to another page!</button></a>
-</p>
 
-</body>
+
+
+        <div class="MidDiv">
+            <div class="AllItems">
+                <a ><button>All items</button></a>
+            </div>
+
+            <div class="GPU">
+                <a ><button>GPUs</button></a>
+            </div>
+
+            <div class="CPU">
+                <a ><button>CPUs</button></a>
+            </div>
+
+            <div class="Chassi">
+                <a ><button>Chassis</button></a>
+            </div>
+        </div>
+
+
+        <p align="center">
+            <a href=other_page><button>Press here to go to another page!</button></a>
+        </p>
+    </body>
 </html>
