@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from flask_mysqldb import MySQL
-from flask_login import UserMixin
 #source env/bin/activate
 #flask run
 
 app = Flask(__name__)
+app.secret_key = 'monkey'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config["MYSQL_USER"] = 'root'
@@ -19,8 +19,10 @@ def index():
     cur.execute("SELECT * FROM User")
     fetchdata = cur.fetchall()
     cur.close()
- 
-    return render_template('index.html', data = fetchdata)
+    if 'username' in session:
+        username = session['username']
+        return render_template('index.html', data = "Logged in as: " + username)
+    return render_template('index.html', data = "Not logged in")
 
 @app.route('/other_page')
 def annan_funktion():
@@ -65,11 +67,18 @@ def login():
         loginStatus = cur.fetchall()
         print(loginStatus[0][0])
         cur.close()
-
+        
         if loginStatus[0][0]:
+            session['username'] = request.form['email']
             return redirect('/')
 
         return redirect("/login", code=302)
+
+@app.route('/logout')
+def logout():
+    if 'username' in session:
+        session.pop('username', None)
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug = True)
