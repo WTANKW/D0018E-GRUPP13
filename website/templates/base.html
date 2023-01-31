@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        {% block head %}
+        <meta charset="utf-8" />
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+        <link rel="stylesheet" href="{{
+            url_for('static',filename='styles/index.css') }}">
+
+        <title>E-Commerce</title>
+        {% endblock %}
+    </head>
+
+    <body>
+        <script>
+            function toggle_LogOut(){
+                el = document.querySelector('.LogOut');
+  
+                if(el.style.visibility == 'hidden'){
+                    el.style.visibility = 'visible'
+                }else{
+                    el.style.visibility = 'hidden'
+                }
+            }
+        </script>
+
+        <div class="TopDiv">
+
+            <div class="SiteName">
+                <p id="SiteName">PomKlett</p>
+            </div>
+
+           
+        {% if data == None %}
+            <div class="SignUp">
+                <a id="SignUp" href=signup><button>Sign Up</button></a>
+            </div>
+
+            <div class="LogIn">
+                <a id="LogIn" href=login><button>Log In</button></a>
+            </div>
+
+        {% else %}
+            <div class="LogOut">
+                <a id="LogOut" href=logout><button onclick="toggle_LogOut()">Logout</button></a>
+            </div> 
+
+        {% endif %}
+
+        </div>
+
+        <div class="MidDiv">
+            <div class="AllItems">
+                <a ><button>All items</button></a>
+            </div>
+
+            <div class="GPU">
+                <a ><button>GPUs</button></a>
+            </div>
+
+            <div class="CPU">
+                <a ><button>CPUs</button></a>
+            </div>
+
+            <div class="Chassi">
+                <a ><button>Chassis</button></a>
+            </div>
+
+
+        </div>
+
+        {% block content %}
+        {% endblock %}
+
+        <p align="center">
+            <a href=other_page><button>Press here to go to another page!</button></a>
+        </p>
+        
+        <div class="products">
+        </div>
+
+
+    </body>
+</html>

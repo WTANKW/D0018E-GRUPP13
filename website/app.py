@@ -19,10 +19,11 @@ def index():
     cur.execute("SELECT * FROM User")
     fetchdata = cur.fetchall()
     cur.close()
+
     if 'username' in session:
         username = session['username']
         return render_template('index.html', data = "Logged in as: " + username)
-    return render_template('index.html', data = "Not logged in")
+    return render_template('index.html', data = None)
 
 @app.route('/other_page')
 def annan_funktion():
