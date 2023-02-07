@@ -22,8 +22,8 @@ def index():
 
     if 'username' in session:
         username = session['username']
-        return render_template('index.html', data = "Logged in as: " + username)
-    return render_template('index.html', data = None)
+        return render_template('index.html', loginData = "Logged in as: " + username)
+    return render_template('index.html', loginData = None)
 
 @app.route('/other_page')
 def annan_funktion():
@@ -45,7 +45,7 @@ def signup():
    
         if emailInUse[0][0] or password == "":
             cur.close()
-            return render_template('signup.html', data = "Signup Failed, Please try again")
+            return render_template('signup.html', loginData = "Signup Failed, Please try again")
 
         cur.execute("INSERT INTO User (email, password) VALUES (%s, %s)", (email, password))
         mysql.connection.commit()
@@ -84,3 +84,17 @@ def logout():
 if __name__ == "__main__":
     app.run(debug = True)
 
+
+@app.route('/product')
+def product():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM Product")
+    productInfo = cur.fetchall()
+    cur.close()
+
+    if 'username' in session:
+        username = session['username']
+    else:
+        username = None
+
+    return render_template('product.html', loginData = username, productData = productInfo)

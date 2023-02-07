@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Product{% endblock %}
+{% block head %}
+<meta charset="utf-8" />
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/product.css') }}">
+{% endblock %}
+{% block content %}
+{#<h1>{{ productData[0][0]}}</h1>
+<h2>{{ loginData}}</h2>#}
+{# product page template #}
+<div class="ProductPage">
+    <div class="Product">
+
+        <div class="ProductName">
+            <p>{{productData[0][1]}}</p>
+        </div>
+
+        <div class="ProductID">
+            <p>{{productData[0][0]}}</p>
+        </div>
+
+    </div>
+
+    <div class="ProductImage">
+        <img src="{{productData[0][5]}}" alt="Product image">
+    </div>
+
+    <div class="ProductInfo">
+
+        <div class="ProductPrice">
+            <p>{{productData[0][3]}} kr</p>
+        </div>
+
+        <div class="ProductStock">
+            <p>Stock: {{productData[0][2]}}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

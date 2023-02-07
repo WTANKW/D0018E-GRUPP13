@@ -2,29 +2,16 @@
 <html>
 
     <head>
-        {% block head %}
         <meta charset="utf-8" />
         <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
         <link rel="stylesheet" href="{{
             url_for('static',filename='styles/index.css') }}">
-
+        {% block head %}
         <title>E-Commerce</title>
         {% endblock %}
     </head>
 
     <body>
-        <script>
-            function toggle_LogOut(){
-                el = document.querySelector('.LogOut');
-  
-                if(el.style.visibility == 'hidden'){
-                    el.style.visibility = 'visible'
-                }else{
-                    el.style.visibility = 'hidden'
-                }
-            }
-        </script>
-
         <div class="TopDiv">
 
             <div class="SiteName">
@@ -32,7 +19,7 @@
             </div>
 
            
-        {% if data == None %}
+        {% if loginData == None %}
             <div class="SignUp">
                 <a id="SignUp" href=signup><button>Sign Up</button></a>
             </div>
@@ -56,7 +43,7 @@
             </div>
 
             <div class="GPU">
-                <a ><button>GPUs</button></a>
+                <a href=product><button>GPUs</button></a>
             </div>
 
             <div class="CPU">
@@ -66,20 +53,8 @@
             <div class="Chassi">
                 <a ><button>Chassis</button></a>
             </div>
-
-
         </div>
-
         {% block content %}
         {% endblock %}
-
-        <p align="center">
-            <a href=other_page><button>Press here to go to another page!</button></a>
-        </p>
-        
-        <div class="products">
-        </div>
-
-
     </body>
 </html>
