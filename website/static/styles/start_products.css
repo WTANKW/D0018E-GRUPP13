@@ -1,0 +1,23 @@
+.Products{
+    flex-wrap: wrap;
+    display: flex;
+    align-items: baseline;
+    padding-left: 10%;
+}
+
+.Product{
+    background-color: #fff;
+    padding-top: 4%;
+    display: flex;
+    align-self: center;
+
+    width:30%; /* or whatever width you want. */
+  
+
+
+}
+
+#image{
+    width: 10%;
+    height: auto;
+}

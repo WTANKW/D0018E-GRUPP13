@@ -8,7 +8,7 @@ app.secret_key = 'monkey'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config["MYSQL_USER"] = 'root'
-app.config["MYSQL_PASSWORD"] = '123456789'
+app.config["MYSQL_PASSWORD"] = 'r5ZA*sagtrhkä9riuktd3ir6%C'
 app.config["MYSQL_DB"] = 'test'
 
 mysql = MySQL(app)
@@ -20,10 +20,19 @@ def index():
     fetchdata = cur.fetchall()
     cur.close()
 
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM Product")
+    categoryInfo = cur.fetchall()
+    cur.close()
+
+
+
     if 'username' in session:
         username = session['username']
         return render_template('index.html', loginData = "Logged in as: " + username)
-    return render_template('index.html', loginData = None)
+    return render_template('index.html', loginData = None, categoryData = categoryInfo)
+
+
 
 @app.route('/other_page')
 def annan_funktion():

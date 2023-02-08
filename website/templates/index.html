@@ -1,5 +1,31 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
+{% block head %}
+<meta charset="utf-8">
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/start_products.css') }}">
+{% endblock %}
 {% block content %}
+<div class="Products">
+
+    {% for i in range(categoryData|length) %}
+
+    <div class="Product">
+        <div class="ProductName">
+            <p>{{categoryData[i][1]}}</p>
+        </div>
+
+        <div class="ProductID">
+            <p>ID: {{categoryData[i][0]}}</p>
+        </div>
+
+        <div class="ProductImage">
+            <img id="image" src="{{categoryData[i][5]}}" alt="Product image">
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+
+
 
 {% endblock %}
