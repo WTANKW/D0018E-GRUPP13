@@ -12,3 +12,96 @@
     position: relative;
     z-index: 1;
 }
+
+.Product{
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 1.5%;
+}
+
+.ProductName{
+    font-size: 2em;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1%;
+}
+
+.ProductInfo{
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    position: relative;
+    z-index: 1;
+    padding: 1.5%;   
+}
+
+.ProductImage{
+    box-sizing: border-box;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    position: relative;
+    z-index: 1;
+    padding: 1.5%;
+}
+
+.ProductPrice{
+    font-size: 1.5em;
+    color: #000;
+    margin: 0;
+    padding: 10px;
+    text-align: right;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1%;
+}
+
+.ProductStock{
+    font-size: 1.5em;
+    color: #000;
+    margin: 0;
+    padding: 10px;
+    text-align: right;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1%;
+}
+
+.AddBasket{
+    font-size: 1.5em;
+    color: #000;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.AddToCart{
+    /* font-size: 1.5em; */
+    color: #000;
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+#img{
+    max-width: 200px;
+    max-height: 200px;
+}

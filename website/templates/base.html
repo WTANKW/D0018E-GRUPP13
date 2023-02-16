@@ -20,18 +20,17 @@
 
            
         {% if loginData == None %}
-            <div class="SignUp">
-                <a id="SignUp" href=signup><button>Sign Up</button></a>
-            </div>
-
-            <div class="LogIn">
-                <a id="LogIn" href=login><button>Log In</button></a>
+            <div class="NotLoggedIn">
+                <a id="SignUp" href=/signup><button>Sign Up</button></a>
+                <a id="LogIn" href=/login><button>Log In</button></a>
             </div>
 
         {% else %}
-            <div class="LogOut">
-                <a id="LogOut" href=logout><button onclick="toggle_LogOut()">Logout</button></a>
-            </div> 
+            <div class="LoggedIn">
+                    <a id="Basket" href=/basket><button>Basket</button></a>
+                    <a id="Orders" href=/orders><button>Orders</button></a>
+                    <a id="LogOut" href=/logout><button>Logout</button></a>
+            </div>
 
         {% endif %}
 
@@ -39,19 +38,19 @@
 
         <div class="MidDiv">
             <div class="AllItems">
-                <a ><button>All items</button></a>
+                <a href=/category/All><button>All categories</button></a>
             </div>
 
             <div class="GPU">
-                <a href=product><button>GPUs</button></a>
+                <a href=/category/GPU><button>GPUs</button></a>
             </div>
 
             <div class="CPU">
-                <a ><button>CPUs</button></a>
+                <a href=/category/CPU><button>CPUs</button></a>
             </div>
 
             <div class="Chassi">
-                <a ><button>Chassis</button></a>
+                <a href=/category/Chassi><button>Chassis</button></a>
             </div>
         </div>
 

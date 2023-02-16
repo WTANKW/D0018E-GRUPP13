@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Basket{% endblock %}
+{% block head %}
+<meta charset="utf-8">
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/basket.css') }}">
+{% endblock %}
+{% block content %}
+<div class="Labels">
+    <p id="Amount">Amount</p>
+</div>
+
+<div class="Products">
+
+    {% for i in range(basketData|length) %}
+        <div class="ID">
+            <p>{{basketData[i][0]}}</p>
+        </div>
+
+        <div class="Basket">
+            <p>Basket: {{basketData[i][1]}}</p>
+        </div>
+
+        <div class="ProductID">
+            <p>ProductID: {{basketData[i][2]}}</p>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

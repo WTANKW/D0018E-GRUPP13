@@ -2,82 +2,87 @@ body {
     background-color: rgb(122, 159, 168);
     margin:0;
     padding:0;
-  }
+}
+
+h1 {
+  font-family: verdana;
+  color: rgb(168, 32, 32);
+  text-align: center;
+}
+
+p {
+  font-family: verdana;
+  font-size: 20px;
+}
+
+.TopDiv{
+  display: flex;
+  align-items: baseline;
+  padding-left: 10%;
+  background-color: rgb(255, 255, 255);
+}
+
+.MidDiv{
+  display: flex;
+  align-items: baseline;
+  background-color: rgb(193, 184, 184);
+}
+
+#SiteName{
+  display: flex;
+  font-family: verdana;
+  color: rgb(155, 170, 19);
+  font-weight: bold;
+  font-size: 200%;
+  box-shadow: 10px 10px rgb(124, 123, 50);
   
-  h1 {
-    font-family: verdana;
-    color: rgb(168, 32, 32);
-    text-align: center;
-  }
-  
-  p {
-    font-family: verdana;
-    font-size: 20px;
-  }
+}
 
-  .TopDiv{
-    display: flex;
-    align-items: baseline;
-    padding-left: 10%;
-    background-color: rgb(255, 255, 255);
-  }
+.AllItems{
+  display: flex;
+  align-self: center;
+  padding-left: 10%;
+}
 
-  .MidDiv{
-    display: flex;
-    align-items: baseline;
-    background-color: rgb(193, 184, 184);
-  }
+.GPU{
+  display: flex;
+  align-self: center;
+  padding-left: 5%;
+}
 
-  #SiteName{
-    display: flex;
-    font-family: verdana;
-    color: rgb(155, 170, 19);
-    font-weight: bold;
-    font-size: 200%;
-    box-shadow: 10px 10px rgb(124, 123, 50);
+.CPU{
+  display: flex;
+  align-self: center;
+  padding-left: 5%;
+}
 
-  }
+.Chassi{
+  display: flex;
+  align-self: center;
+  padding-left: 5%;
+}
 
-  .AllItems{
-    display: flex;
-    align-self: center;
-    padding-left: 10%;
-  }
+.SignUp{
+  display: flex;
+  align-self: center;
+  padding-left: 65%;
+}
 
-  .GPU{
-    display: flex;
-    align-self: center;
-    padding-left: 5%;
-  }
+.LogIn{
+  display: flex;
+  align-self: center;
+  padding-left: 1.5%;
+}
 
-  .CPU{
-    display: flex;
-    align-self: center;
-    padding-left: 5%;
-  }
+.NotLoggedIn{
+  display: flex;
+  align-self: center;
+  padding-left: 70%;
+}
 
-  .Chassi{
-    display: flex;
-    align-self: center;
-    padding-left: 5%;
-  }
-
-  .SignUp{
-    display: flex;
-    align-self: center;
-    padding-left: 65%;
-  }
-
-  .LogIn{
-    display: flex;
-    align-self: center;
-    padding-left: 1.5%;
-  }
-
-  .LogOut{
-    display: flex;
-    align-self: center;
-    padding-left:70%;
-  }
-
+.LoggedIn{
+  display: flex;
+  align-self: center;
+  padding-left: 70%;
+}
 
