@@ -31,6 +31,8 @@ def signup():
         adress = request.form['adress']
         
         cur = mysql.connection.cursor()
+
+        #checks if your email is already in use
         cur.execute("SELECT EXISTS(SELECT * FROM User WHERE Email = %s)", (email,))
         emailInUse = cur.fetchall()
    
@@ -38,8 +40,11 @@ def signup():
             cur.close()
             return render_template('signup.html', loginData = "Signup Failed, Please try again")
 
+        #creates your account
         cur.execute("INSERT INTO User (Email, Password, FName, LName, Adress) VALUES (%s, %s, %s, %s, %s)", (email, password, fname, lname, adress))
         mysql.connection.commit()
+
+        #creates your basket
         cur.execute("INSERT INTO Basket (Customer) VALUES ((SELECT ID FROM User WHERE Email = %s))", (email,))
         mysql.connection.commit()
         cur.close()
@@ -56,9 +61,10 @@ def login():
         password = request.form['password']
         
         cur = mysql.connection.cursor()
+
+        #checks if your account exists
         cur.execute("SELECT EXISTS(SELECT * FROM User WHERE email = %s AND password = %s)", (email, password))
         loginStatus = cur.fetchall()
-        print(loginStatus[0][0])
         cur.close()
         
         if loginStatus[0][0]:
@@ -81,11 +87,33 @@ if __name__ == "__main__":
 def product(productID):
 
     cur = mysql.connection.cursor()
+    
+    #fetches the productinfo from the specific product
     cur.execute("SELECT * FROM Product WHERE ID = %s", (productID,))
     productInfo = cur.fetchall()
     
     if request.method == "POST":
-        cur.execute("INSERT INTO BasketProduct (Basket, Product) VALUES ((SELECT ID FROM Basket WHERE Customer = (SELECT ID FROM User WHERE Email = %s)), %s)", (session['username'], productID))
+        #to check if the product already exists in the basket
+        cur.execute('''SELECT EXISTS(SELECT * FROM BasketProduct WHERE Basket = 
+                    (SELECT ID FROM Basket WHERE Customer = 
+                    (SELECT ID FROM User WHERE Email = %s)) and Product = %s)
+                    ''', (session['username'], productID))
+
+        productExistsInBasket = cur.fetchall()
+
+        if productExistsInBasket[0][0] == 0:
+            #if the product doesn't exist a new row is created
+            cur.execute('''INSERT INTO BasketProduct (Basket, Product, Amount) 
+                        VALUES ((SELECT ID FROM Basket WHERE Customer = 
+                        (SELECT ID FROM User WHERE Email = %s)), %s, 1)
+                        ''', (session['username'], productID))
+        else:
+            #if the product exists 1 is added to the current amout
+            cur.execute('''UPDATE BasketProduct SET Amount = (Amount + 1) WHERE Basket = 
+                    (SELECT ID FROM Basket WHERE Customer = 
+                    (SELECT ID FROM User WHERE Email = %s)) and Product = %s
+                    ''', (session['username'], productID))
+
         mysql.connection.commit()
     
     cur.close()
@@ -101,8 +129,10 @@ def product(productID):
 def category(categoryName):
     cur = mysql.connection.cursor()
     if categoryName == "All":
+        #fetches data from all products
         cur.execute("SELECT * FROM Product")
     else:
+        #fetches data from the products in the specific category
         cur.execute("SELECT * FROM Product WHERE Category = %s", (categoryName,))
     categoryInfo = cur.fetchall()
     cur.close()
@@ -114,17 +144,45 @@ def category(categoryName):
 
     return render_template('category.html', loginData = username, categoryData = categoryInfo)
 
-@app.route('/basket')
+@app.route('/basket', methods = ['POST', 'GET'])
 def basket():
-
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM BasketProduct WHERE Basket = (SELECT ID FROM Basket WHERE Customer = (SELECT ID FROM User WHERE Email = %s))", (session['username'],))
-    basketInfo = cur.fetchall()
-    cur.close()
-
     if 'username' in session:
         username = session['username']
     else:
         username = None
 
+    cur = mysql.connection.cursor()
+    if request.method == "POST":
+        productID = request.form['productID']
+
+        #decrements amount by 1
+        cur.execute('''UPDATE BasketProduct SET Amount = (Amount - 1) WHERE Basket = 
+                        (SELECT ID FROM Basket WHERE Customer = 
+                        (SELECT ID FROM User WHERE Email = %s)) and Product = %s
+                        ''', (session['username'], productID))
+        mysql.connection.commit()
+
+        #gets the amount of the BasketProduct
+        cur.execute('''SELECT Amount FROM BasketProduct WHERE Basket = 
+                    (SELECT ID FROM Basket WHERE Customer = 
+                    (SELECT ID FROM User WHERE Email = %s)) and Product = %s
+                    ''', (session['username'], productID))
+
+        amount = cur.fetchall()
+
+        if(amount[0][0] <= 0):
+            #deletes row if the amount is 0
+            cur.execute('''DELETE FROM BasketProduct WHERE Basket = 
+                        (SELECT ID FROM Basket WHERE Customer = 
+                        (SELECT ID FROM User WHERE Email = %s)) and Product = %s
+                        ''', (session['username'], productID))   
+            mysql.connection.commit()
+
+    #fetches all your BasketProducts
+    cur.execute('''SELECT * FROM BasketProduct WHERE Basket = 
+                (SELECT ID FROM Basket WHERE Customer = 
+                (SELECT ID FROM User WHERE Email = %s))''', (session['username'],))
+    basketInfo = cur.fetchall()
+    cur.close()
+    
     return render_template('basket.html', loginData = username, basketData = basketInfo)

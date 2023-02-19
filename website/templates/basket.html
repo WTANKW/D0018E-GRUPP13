@@ -5,24 +5,32 @@
 <link rel="stylesheet" href="{{ url_for('static',filename='styles/basket.css') }}">
 {% endblock %}
 {% block content %}
-<div class="Labels">
-    <p id="Amount">Amount</p>
-</div>
 
 <div class="Products">
 
     {% for i in range(basketData|length) %}
-        <div class="ID">
-            <p>{{basketData[i][0]}}</p>
-        </div>
-
-        <div class="Basket">
-            <p>Basket: {{basketData[i][1]}}</p>
+        <div class="BasketID">
+            <p>BasketID: {{basketData[i][0]}}</p>
         </div>
 
         <div class="ProductID">
-            <p>ProductID: {{basketData[i][2]}}</p>
+            <p>ProductID: {{basketData[i][1]}}</p>
         </div>
+
+        <div class="Amount">
+            <p>Amount: {{basketData[i][2]}}</p>
+        </div>
+
+        <form action="/basket" method="POST">
+
+            <input type="hidden" name="productID" id="enteerlname" value="{{basketData[i][1]}}">
+
+            <button class="removeItem" type="submit">
+                remove item
+            </button>
+        </form>
+
+        <br>
     {% endfor %}
 </div>
 
