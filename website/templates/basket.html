@@ -9,17 +9,19 @@
 <div class="Products">
 
     {% for i in range(basketData|length) %}
-        <div class="BasketID">
-            <p>BasketID: {{basketData[i][0]}}</p>
+        <div class="ProductName">
+            <p>Product Name: {{productData[i][0]}}</p>
         </div>
 
-        <div class="ProductID">
-            <p>ProductID: {{basketData[i][1]}}</p>
+        <div class="Price">
+            <p>Price: {{productData[i][1]}}</p>
         </div>
 
         <div class="Amount">
-            <p>Amount: {{basketData[i][2]}}</p>
+            <p>Amount: {{basketData[i][0]}}</p>
         </div>
+
+        
 
         <form action="/basket" method="POST">
 
