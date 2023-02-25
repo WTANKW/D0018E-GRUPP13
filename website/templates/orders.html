@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Orders{% endblock %}
+{% block head %}
+<meta charset="utf-8">
+{% endblock %}
+{% block content %}
+
+<div class="Orders">
+    {% for i in range(orderData|length) %}
+    <div class="OrderID">
+        <p>OrderID: {{orderData[i][0]}}</p>
+    </div>
+
+    {% for j in range(productData[i]|length) %}
+        <div class="Product">
+            <p>Product: {{productData[i][j][0]}}</p>
+        </div>
+    
+        <div class="Amount">
+            <p>Amount: {{orderProductData[i][j][1]}}</p>
+        </div>
+    {% endfor %}
+
+    <div class="Price">
+        <p>Total Price: {{orderPrice[i]}}</p>
+    </div>
+
+    <br>
+{% endfor %}
+</div>
+
+
+{% endblock %}

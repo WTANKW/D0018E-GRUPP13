@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{{ url_for('static',filename='styles/basket.css') }}">
 {% endblock %}
 {% block content %}
-
+{{orderStatus}}
 <div class="Products">
 
     {% for i in range(basketData|length) %}
@@ -24,8 +24,8 @@
         
 
         <form action="/basket" method="POST">
-
-            <input type="hidden" name="productID" id="enteerlname" value="{{basketData[i][1]}}">
+            <input type="hidden" name="placeOrder" value="-1">
+            <input type="hidden" name="productID" value="{{basketData[i][1]}}">
 
             <button class="removeItem" type="submit">
                 remove item
@@ -35,5 +35,17 @@
         <br>
     {% endfor %}
 </div>
+
+
+<form action="/basket" method="POST">
+    <input type="hidden" name="productID" value="-1">
+    <input type="hidden" name="placeOrder" value="1">
+    
+
+    <button class="placeOrderButton" type="submit">
+        Place Order
+    </button>
+
+</form>
 
 {% endblock %}
