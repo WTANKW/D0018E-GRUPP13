@@ -34,12 +34,67 @@
 
         <div class="AddBasket">
             <form action="/product/{{productData[0][0]}}" method="POST">
+                <input type="hidden" name="grade" value="-1">
+                <input type="hidden" name="comment" value="-1">
+                <input type="hidden" name="changeStock" value="-1">
+                <input type="hidden" name="addProduct" value="1">
+
                 <button class="AddToCart" type="submit">
                     Add to cart
                 </button>
             </form>
         </div>
     </div>
+
+
+
+   <div>
+        <form action="/product/{{productData[0][0]}}" method="POST">
+            <input type="hidden" name="addProduct" value="-1">
+            <input type="hidden" name="changeStock" value="-1">
+        
+            <label for="grade">Enter Grade</label>
+            <input type="number" name="grade" id="enterGrade">
+
+            <label for="comment">Enter Comment</label>
+            <input type="text" name="comment" id="enterComment">
+
+            <button class="submitComment" type="submit">
+                Post grade and comment
+            </button>
+        </form>
+    </div>
+
+    {% if admin %}
+        <form action="/product/{{productData[0][0]}}" method="POST">
+            <div>
+                <input type="hidden" name="grade" value="-1">
+                <input type="hidden" name="comment" value="-1">
+                <input type="hidden" name="addProduct" value="-1">
+                
+                <label for="changeStock">Enter new stock</label>
+                <input type="number" name="changeStock" id="enterstock">
+            </div>
+        </form>
+    {% endif %}
+</div>
+
+
+<div class="GradesAndComments">
+    {% for i in range(gradeInfo|length) %}
+        <div class="User">
+            <p>User: {{gradeInfo[i][1]}}</p>
+        </div>
+
+        <div class="Grade">
+            <p>Grade: {{gradeInfo[i][4]}}</p>
+        </div>
+
+        <div class="Comment">
+            <p>Review: {{gradeInfo[i][3]}}</p>
+        </div>
+        <br>
+    {% endfor %}
 </div>
 
 
