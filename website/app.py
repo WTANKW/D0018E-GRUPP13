@@ -53,6 +53,7 @@ def signup():
         
         session['username'] = request.form['email']
 
+        #gets userid
         cur.execute("SELECT ID FROM User WHERE email = %s", (session['username'],))
         userID = cur.fetchall()
         session['userID'] = userID[0][0]
@@ -122,9 +123,10 @@ def product(productID):
                     ''', (newStock, productID))
         mysql.connection.commit()
 
-    if request.method == "POST" and 'username' in session and request.form['grade'] != "-1":
+    if request.method == "POST" and 'username' in session and request.form['grade'] != "-1" and request.form['grade']:
         grade = request.form['grade']
         comment = request.form['comment']
+        #posts comment
         cur.execute('''INSERT INTO Comment (UserID, ProductID, text, grade) 
                         VALUES (%s, %s, %s, %s)
                         ''', (session['userID'], productID, comment, grade))
@@ -134,10 +136,9 @@ def product(productID):
     cur.execute("SELECT * FROM Product WHERE ID = %s", (productID,))
     productInfo = cur.fetchall()
 
+    #fetches comments
     cur.execute("SELECT * FROM Comment WHERE ProductID = %s", (productID,))
     gradeInfo = cur.fetchall()
-    print(gradeInfo)
-
 
     cur.close()
 
