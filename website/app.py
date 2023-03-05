@@ -181,7 +181,7 @@ def basket():
 
     cur = mysql.connection.cursor()
     if request.method == "POST":
-        if request.form['productID'] != "-1":
+        if request.form['action'] == "delete":
             productID = request.form['productID']
 
             #decrements amount by 1
@@ -213,7 +213,7 @@ def basket():
                 (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
     productInfo = cur.fetchall()
 
-    if request.method == "POST" and request.form['placeOrder'] != "-1":
+    if request.method == "POST" and request.form['action'] == "order":
             enoughInStock = True
             #gets the amount in stock
             cur.execute('''SELECT Quantity FROM Product WHERE ID IN 
@@ -232,7 +232,6 @@ def basket():
                    orderStatus = "Your order could not be made"
 
             if enoughInStock == True:
-                #jobbar på att ta bort items in stock
                 for i in range(0, len(itemsInBasket)):
                     #removes items from stock
                     cur.execute('''UPDATE Product SET Quantity = (Quantity - %s) WHERE ID = 

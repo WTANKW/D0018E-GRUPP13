@@ -24,7 +24,7 @@
         
 
         <form action="/basket" method="POST">
-            <input type="hidden" name="placeOrder" value="-1">
+            <input type="hidden" name="action" value="delete">
             <input type="hidden" name="productID" value="{{basketData[i][1]}}">
 
             <button class="removeItem" type="submit">
@@ -38,9 +38,7 @@
 
 
 <form action="/basket" method="POST">
-    <input type="hidden" name="productID" value="-1">
-    <input type="hidden" name="placeOrder" value="1">
-    
+    <input type="hidden" name="action" value="order">
 
     <button class="placeOrderButton" type="submit">
         Place Order
