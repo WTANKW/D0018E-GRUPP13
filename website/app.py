@@ -203,17 +203,8 @@ def basket():
                             ''', (session['userID'], productID))   
                 mysql.connection.commit()
 
-    #fetches all your BasketProducts
-    cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = 
-                (SELECT ID FROM Basket WHERE Customer = %s)''', (session['userID'],))
-    basketInfo = cur.fetchall()
 
-    cur.execute('''SELECT Name, Price FROM Product WHERE ID IN  
-                (SELECT Product FROM BasketProduct WHERE Basket = 
-                (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
-    productInfo = cur.fetchall()
-
-    if request.method == "POST" and request.form['action'] == "order":
+        elif request.form['action'] == "order":
             enoughInStock = True
             #gets the amount in stock
             cur.execute('''SELECT Quantity FROM Product WHERE ID IN 
@@ -228,8 +219,8 @@ def basket():
 
             for i in range(0, len(itemsInStock)):
                 if itemsInBasket[i][0] > itemsInStock[i][0]:
-                   enoughInStock = False
-                   orderStatus = "Your order could not be made"
+                    enoughInStock = False
+                    orderStatus = "Your order could not be made"
 
             if enoughInStock == True:
                 for i in range(0, len(itemsInBasket)):
@@ -237,12 +228,22 @@ def basket():
                     cur.execute('''UPDATE Product SET Quantity = (Quantity - %s) WHERE ID = 
                             %s''', (itemsInBasket[i][0], itemsInBasket[i][1]))
                 mysql.connection.commit()
+
                 #creates an order
                 cur.execute("INSERT INTO Orders (Customer) VALUES(%s)", (session['userID'],))
                 cur.execute("SELECT * FROM Orders WHERE ID = LAST_INSERT_ID()")
                 mysql.connection.commit()
                 orderID = cur.fetchall()[0][0]
-
+                
+                #gets info from your basket
+                cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = 
+                (SELECT ID FROM Basket WHERE Customer = %s)''', (session['userID'],))
+                basketInfo = cur.fetchall()
+                cur.execute('''SELECT Name, Price FROM Product WHERE ID IN  
+                (SELECT Product FROM BasketProduct WHERE Basket = 
+                (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
+                productInfo = cur.fetchall()
+                
                 #creates OrderProducts connected to your order
                 for i in range(0, len(basketInfo)):
                     cur.execute("INSERT INTO OrderProduct (Product, OrderID, Price, Amount) VALUES (%s, %s, %s, %s)", (basketInfo[i][1], orderID, productInfo[i][1], basketInfo[i][0]))
@@ -254,15 +255,15 @@ def basket():
                             ''', (session['userID'],))  
                 mysql.connection.commit()
 
-            #fetches all your BasketProducts
-            cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = 
-                    (SELECT ID FROM Basket WHERE Customer = %s)''', (session['userID'],))
-            basketInfo = cur.fetchall()
+    #fetches all your BasketProducts
+    cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = 
+            (SELECT ID FROM Basket WHERE Customer = %s)''', (session['userID'],))
+    basketInfo = cur.fetchall()
 
-            cur.execute('''SELECT Name, Price FROM Product WHERE ID IN  
-                    (SELECT Product FROM BasketProduct WHERE Basket = 
-                    (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
-            productInfo = cur.fetchall()
+    cur.execute('''SELECT Name, Price FROM Product WHERE ID IN  
+            (SELECT Product FROM BasketProduct WHERE Basket = 
+            (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
+    productInfo = cur.fetchall()
 
     cur.close()
     return render_template('basket.html', loginData = username, basketData = basketInfo, productData = productInfo, orderStatus = orderStatus)
