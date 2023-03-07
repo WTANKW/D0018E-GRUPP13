@@ -34,10 +34,7 @@
 
         <div class="AddBasket">
             <form action="/product/{{productData[0][0]}}" method="POST">
-                <input type="hidden" name="grade" value="-1">
-                <input type="hidden" name="comment" value="-1">
-                <input type="hidden" name="changeStock" value="-1">
-                <input type="hidden" name="addProduct" value="1">
+                <input type="hidden" name="action" value="addToBasket">
 
                 <button class="AddToCart" type="submit">
                     Add to cart
@@ -50,8 +47,7 @@
 
    <div>
         <form action="/product/{{productData[0][0]}}" method="POST">
-            <input type="hidden" name="addProduct" value="-1">
-            <input type="hidden" name="changeStock" value="-1">
+            <input type="hidden" name="action" value="grading">
         
             <label for="grade">Enter Grade</label>
             <input type="number" name="grade" id="enterGrade">
@@ -68,12 +64,10 @@
     {% if admin %}
         <form action="/product/{{productData[0][0]}}" method="POST">
             <div>
-                <input type="hidden" name="grade" value="-1">
-                <input type="hidden" name="comment" value="-1">
-                <input type="hidden" name="addProduct" value="-1">
+                <input type="hidden" name="action" value="changeStock">
                 
                 <label for="changeStock">Enter new stock</label>
-                <input type="number" name="changeStock" id="enterstock">
+                <input type="number" name="newStock" id="enterstock">
             </div>
         </form>
     {% endif %}

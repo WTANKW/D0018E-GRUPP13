@@ -76,7 +76,6 @@ def login():
         cur.execute("SELECT EXISTS(SELECT * FROM User WHERE email = %s AND password = %s)", (email, password))
         loginStatus = cur.fetchall()
         
-        
         if loginStatus[0][0]:
             session['username'] = request.form['email']
 
@@ -108,7 +107,7 @@ def product(productID):
         cur.execute('''SELECT UserID FROM Admin WHERE UserID = %s''', (session['userID'],))
         admin = cur.fetchall()
 
-    if request.method == "POST" and 'username' in session and request.form['addProduct'] != "-1":
+    if request.method == "POST" and 'username' in session and request.form['action'] == "addToBasket":
         #if the product doesn't exist a new row is created otherwise 1 is added to the amount
         cur.execute('''INSERT INTO BasketProduct (Basket, Product, Amount) 
                         VALUES ((SELECT ID FROM Basket WHERE Customer = %s), %s, 1)
@@ -116,14 +115,14 @@ def product(productID):
                         ''', (session['userID'], productID))
         mysql.connection.commit()
 
-    if request.method == "POST" and 'username' in session and request.form['changeStock'] != "-1":
-        newStock = request.form['changeStock']
+    if request.method == "POST" and 'username' in session and request.form['action'] == "changeStock":
+        newStock = request.form['newStock']
         #updates stock
         cur.execute('''UPDATE Product SET Quantity = %s WHERE ID = %s
                     ''', (newStock, productID))
         mysql.connection.commit()
 
-    if request.method == "POST" and 'username' in session and request.form['grade'] != "-1" and request.form['grade']:
+    if request.method == "POST" and 'username' in session and request.form['action'] == "grading":
         grade = request.form['grade']
         comment = request.form['comment']
         #posts comment
@@ -172,11 +171,6 @@ def category(categoryName):
 
 @app.route('/basket', methods = ['POST', 'GET'])
 def basket():
-    if 'username' in session:
-        username = session['username']
-    else:
-        username = None
-
     orderStatus = ""
 
     cur = mysql.connection.cursor()
@@ -266,7 +260,7 @@ def basket():
     productInfo = cur.fetchall()
 
     cur.close()
-    return render_template('basket.html', loginData = username, basketData = basketInfo, productData = productInfo, orderStatus = orderStatus)
+    return render_template('basket.html', basketData = basketInfo, productData = productInfo, orderStatus = orderStatus)
 
 @app.route('/orders')
 def orders():
