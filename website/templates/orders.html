@@ -11,6 +11,10 @@
         <p>OrderID: {{orderData[i][0]}}</p>
     </div>
 
+    <div class="Status">
+        <p>Status: {{orderData[i][1]}}</p>
+    </div>
+
     {% for j in range(productData[i]|length) %}
         <div class="Product">
             <p>Product: {{productData[i][j][0]}}</p>
@@ -26,6 +30,18 @@
     </div>
 
     <br>
+
+    {% if admin %}
+    <form action="/orders" method="POST">
+        <div>
+            <input type="hidden" name="orderID" value="{{orderData[i][0]}}">   
+            
+            <button class="delivered" type="submit">
+                Delivered
+            </button>
+        </div>
+    </form>
+    {% endif %}
 {% endfor %}
 </div>
 

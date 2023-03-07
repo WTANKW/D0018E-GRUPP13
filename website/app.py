@@ -82,6 +82,11 @@ def login():
             cur.execute("SELECT ID FROM User WHERE email = %s", (session['username'],))
             userID = cur.fetchall()
             session['userID'] = userID[0][0]
+            
+            cur.execute("SELECT ID FROM Basket WHERE Customer = %s", (session['userID'],))
+            basketID = cur.fetchall()
+            session['basketID'] = basketID[0][0]
+
             cur.close()
             return redirect('/')
 
@@ -110,9 +115,9 @@ def product(productID):
     if request.method == "POST" and 'username' in session and request.form['action'] == "addToBasket":
         #if the product doesn't exist a new row is created otherwise 1 is added to the amount
         cur.execute('''INSERT INTO BasketProduct (Basket, Product, Amount) 
-                        VALUES ((SELECT ID FROM Basket WHERE Customer = %s), %s, 1)
+                        VALUES (%s, %s, 1)
                         ON DUPLICATE KEY UPDATE Amount = Amount + VALUES(Amount)
-                        ''', (session['userID'], productID))
+                        ''', (session['basketID'], productID))
         mysql.connection.commit()
 
     if request.method == "POST" and 'username' in session and request.form['action'] == "changeStock":
@@ -167,8 +172,6 @@ def category(categoryName):
 
     return render_template('category.html', loginData = username, categoryData = categoryInfo)
 
-
-
 @app.route('/basket', methods = ['POST', 'GET'])
 def basket():
     orderStatus = ""
@@ -179,22 +182,19 @@ def basket():
             productID = request.form['productID']
 
             #decrements amount by 1
-            cur.execute('''UPDATE BasketProduct SET Amount = (Amount - 1) WHERE Basket = 
-                        (SELECT ID FROM Basket WHERE Customer = %s) and Product = %s
-                        ''', (session['userID'], productID))
+            cur.execute('''UPDATE BasketProduct SET Amount = (Amount - 1) WHERE Basket = %s and Product = %s
+                        ''', (session['basketID'], productID))
             mysql.connection.commit()
 
             #gets the amount of the BasketProduct
-            cur.execute('''SELECT Amount FROM BasketProduct WHERE Basket = 
-                        (SELECT ID FROM Basket WHERE Customer = %s) and Product = %s
-                        ''', (session['userID'], productID))
+            cur.execute('''SELECT Amount FROM BasketProduct WHERE Basket = %s and Product = %s
+                        ''', (session['basketID'], productID))
             amount = cur.fetchall()
 
             if(amount[0][0] <= 0):
                 #deletes row if the amount is 0
-                cur.execute('''DELETE FROM BasketProduct WHERE Basket = 
-                            (SELECT ID FROM Basket WHERE Customer = %s) and Product = %s
-                            ''', (session['userID'], productID))   
+                cur.execute('''DELETE FROM BasketProduct WHERE Basket = %s and Product = %s
+                            ''', (session['basketID'], productID))   
                 mysql.connection.commit()
 
 
@@ -202,13 +202,11 @@ def basket():
             enoughInStock = True
             #gets the amount in stock
             cur.execute('''SELECT Quantity FROM Product WHERE ID IN 
-                    (SELECT Product FROM BasketProduct WHERE Basket =
-                    (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
+                    (SELECT Product FROM BasketProduct WHERE Basket = %s)''', (session['basketID'],))
             itemsInStock = cur.fetchall()
 
             #gets the amount the customer wants to order
-            cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = 
-                    (SELECT ID FROM Basket WHERE Customer = %s)''', (session['userID'],))
+            cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = %s''', (session['basketID'],))
             itemsInBasket = cur.fetchall()
 
             for i in range(0, len(itemsInStock)):
@@ -224,18 +222,16 @@ def basket():
                 mysql.connection.commit()
 
                 #creates an order
-                cur.execute("INSERT INTO Orders (Customer) VALUES(%s)", (session['userID'],))
+                cur.execute("INSERT INTO Orders (Customer, Status) VALUES(%s, 'Confirmed')", (session['userID'],))
                 cur.execute("SELECT * FROM Orders WHERE ID = LAST_INSERT_ID()")
                 mysql.connection.commit()
                 orderID = cur.fetchall()[0][0]
                 
                 #gets info from your basket
-                cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = 
-                (SELECT ID FROM Basket WHERE Customer = %s)''', (session['userID'],))
+                cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = %s''', (session['basketID'],))
                 basketInfo = cur.fetchall()
                 cur.execute('''SELECT Name, Price FROM Product WHERE ID IN  
-                (SELECT Product FROM BasketProduct WHERE Basket = 
-                (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
+                (SELECT Product FROM BasketProduct WHERE Basket = %s)''', (session['basketID'],))
                 productInfo = cur.fetchall()
                 
                 #creates OrderProducts connected to your order
@@ -244,43 +240,56 @@ def basket():
                 mysql.connection.commit()
                 
                 #deletes all the products in your basket
-                cur.execute('''DELETE FROM BasketProduct WHERE Basket = 
-                            (SELECT ID FROM Basket WHERE Customer = %s)
-                            ''', (session['userID'],))  
+                cur.execute('''DELETE FROM BasketProduct WHERE Basket = %s''', (session['basketID'],))  
                 mysql.connection.commit()
 
     #fetches all your BasketProducts
-    cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = 
-            (SELECT ID FROM Basket WHERE Customer = %s)''', (session['userID'],))
+    cur.execute('''SELECT Amount, Product FROM BasketProduct WHERE Basket = %s''', (session['basketID'],))
     basketInfo = cur.fetchall()
 
     cur.execute('''SELECT Name, Price FROM Product WHERE ID IN  
-            (SELECT Product FROM BasketProduct WHERE Basket = 
-            (SELECT ID FROM Basket WHERE Customer = %s))''', (session['userID'],))
+            (SELECT Product FROM BasketProduct WHERE Basket = %s)''', (session['basketID'],))
     productInfo = cur.fetchall()
 
     cur.close()
     return render_template('basket.html', basketData = basketInfo, productData = productInfo, orderStatus = orderStatus)
 
-@app.route('/orders')
+@app.route('/orders', methods=['GET', 'POST'])
 def orders():
     cur = mysql.connection.cursor()
+
+    #change orderstatus to complete
+    if request.method == "POST":
+        changeStatusID = request.form['orderID']
+        cur.execute('''UPDATE Orders SET Status = 'Complete' WHERE ID = %s
+                    ''', (changeStatusID,))
+        mysql.connection.commit()
+
+    admin = ()
+    #checks if user is admin
+    if 'username' in session:
+        cur.execute('''SELECT UserID FROM Admin WHERE UserID = %s''', (session['userID'],))
+        admin = cur.fetchall()
+
     #getting all order IDs from specific customer
-    cur.execute('''SELECT ID FROM Orders WHERE Customer = %s''', (session['userID'],))
-    orderID = cur.fetchall()
+    if admin:
+        cur.execute('''SELECT ID, Status FROM Orders''')
+    else:
+        cur.execute('''SELECT ID, Status FROM Orders WHERE Customer = %s''', (session['userID'],))
+    orderInfo = cur.fetchall()
 
     productInfo = []
     orderProductInfo = []
     orderPrice = []
 
-    for i in range(0, len(orderID)):
+    for i in range(0, len(orderInfo)):
         #getting all the products in the different orders
         cur.execute('''SELECT Name FROM Product WHERE ID IN 
-                    (SELECT Product FROM OrderProduct WHERE OrderID = %s)''', (orderID[i][0],))
+                    (SELECT Product FROM OrderProduct WHERE OrderID = %s)''', (orderInfo[i][0],))
         productInfo.append(cur.fetchall()) 
 
         #getting the the price and amount of the products in the order
-        cur.execute('''SELECT Price, Amount FROM OrderProduct WHERE OrderID = %s''', (orderID[i][0],))
+        cur.execute('''SELECT Price, Amount FROM OrderProduct WHERE OrderID = %s''', (orderInfo[i][0],))
         orderProductInfo.append(cur.fetchall()) 
 
         #calculating the total price of the order
@@ -290,5 +299,5 @@ def orders():
         orderPrice.append(curPrice) 
 
     cur.close()
-    return (render_template('orders.html', orderData = orderID, productData = productInfo, orderProductData = orderProductInfo, orderPrice = orderPrice))
-   
+    return (render_template('orders.html', admin = admin, orderData = orderInfo, productData = productInfo, orderProductData = orderProductInfo, orderPrice = orderPrice))
+
