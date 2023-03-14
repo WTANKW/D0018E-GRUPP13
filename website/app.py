@@ -58,6 +58,11 @@ def signup():
         userID = cur.fetchall()
         session['userID'] = userID[0][0]
 
+        #saves basketID in session
+        cur.execute("SELECT ID FROM Basket WHERE Customer = %s", (session['userID'],))
+        basketID = cur.fetchall()
+        session['basketID'] = basketID[0][0]
+
         cur.close()
         return redirect("/", code=302)
 
@@ -127,14 +132,53 @@ def product(productID):
                     ''', (newStock, productID))
         mysql.connection.commit()
 
+    if request.method == "POST" and 'username' in session and request.form['action'] == "changePrice":
+        newPrice = request.form['newPrice']
+        #updates stock
+        try:
+            cur.execute('''UPDATE Product SET Price = %s WHERE ID = %s
+                        ''', (newPrice, productID))
+        except:
+            pass
+
+        finally:
+            mysql.connection.commit()
+
     if request.method == "POST" and 'username' in session and request.form['action'] == "grading":
         grade = request.form['grade']
         comment = request.form['comment']
-        #posts comment
-        cur.execute('''INSERT INTO Comment (UserID, ProductID, text, grade) 
-                        VALUES (%s, %s, %s, %s)
-                        ''', (session['userID'], productID, comment, grade))
-        mysql.connection.commit()
+        #posts comment 
+        
+        cur.execute('''SELECT ID FROM Orders WHERE Customer = %s''', (session['userID'],))
+        orderInfo = cur.fetchall()
+
+        productIsInOrder = False
+        for i in range(0, len(orderInfo)):
+            cur.execute('''SELECT Product FROM OrderProduct WHERE OrderID = %s''', (orderInfo[i][0],))
+            productsInOrders = cur.fetchall()
+            for j in range(0, len(productsInOrders)):
+                if str(productID) == str(productsInOrders[j][0]):
+                    productIsInOrder = True
+            
+        commentByUserExists = False
+        cur.execute('''SELECT ProductID FROM Comment WHERE UserID = %s''', (session['userID'],))
+        commentsInfo = cur.fetchall()
+        print(commentsInfo)
+        for i in range(0, len(commentsInfo)):
+            if str(productID) == str(commentsInfo[i][0]):
+                commentByUserExists = True
+        
+        if commentByUserExists == False and productIsInOrder == True:
+            try:
+                cur.execute('''INSERT INTO Comment (UserID, ProductID, text, grade) 
+                            VALUES (%s, %s, %s, %s)
+                            ''', (session['userID'], productID, comment, grade))
+            except:
+                pass
+            
+            finally:
+                mysql.connection.commit()
+
 
     #fetches the productinfo from the specific product
     cur.execute("SELECT * FROM Product WHERE ID = %s", (productID,))

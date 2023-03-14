@@ -12,9 +12,9 @@
             <p>{{productData[0][1]}}</p>
         </div>
 
-        <div class="ProductID">
+        <!-- <div class="ProductID">
             <p>{{productData[0][0]}}</p>
-        </div>
+        </div> -->
 
     </div>
 
@@ -35,10 +35,11 @@
         <div class="AddBasket">
             <form action="/product/{{productData[0][0]}}" method="POST">
                 <input type="hidden" name="action" value="addToBasket">
-
-                <button class="AddToCart" type="submit">
-                    Add to cart
-                </button>
+                {% if not admin %}
+                    <button class="AddToCart" type="submit">
+                        Add to cart
+                    </button>
+                {% endif %}
             </form>
         </div>
     </div>
@@ -70,25 +71,37 @@
                 <input type="number" name="newStock" id="enterstock">
             </div>
         </form>
+
+        <form action="/product/{{productData[0][0]}}" method="POST">
+            <div>
+                <input type="hidden" name="action" value="changePrice">
+                
+                <label for="changePrice">Enter new price</label>
+                <input type="number" name="newPrice" id="enterprice">
+            </div>
+        </form>
     {% endif %}
 </div>
 
 
 <div class="GradesAndComments">
-    {% for i in range(gradeInfo|length) %}
-        <div class="User">
-            <p>User: {{gradeInfo[i][1]}}</p>
-        </div>
+    <div class="Review">
+        {% for i in range(gradeInfo|length) %}
+            <div class="User">
+                <p>User: {{gradeInfo[i][1]}}</p>
+            </div>
 
-        <div class="Grade">
-            <p>Grade: {{gradeInfo[i][4]}}</p>
-        </div>
+            <div class="Grade">
+                <p>Grade: {{gradeInfo[i][4]}}</p>
+            </div>
 
-        <div class="Comment">
-            <p>Review: {{gradeInfo[i][3]}}</p>
-        </div>
-        <br>
-    {% endfor %}
+            <div class="Comment">
+                <p>Review: {{gradeInfo[i][3]}}</p>
+            </div>
+            <br>
+            <br>
+        {% endfor %}
+    </div>
 </div>
 
 

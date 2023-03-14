@@ -12,12 +12,9 @@
     align-self: center;
 
     width:30%; /* or whatever width you want. */
-  
-
-
 }
 
 #image{
-    width: 10%;
+    width: 18%;
     height: auto;
 }
